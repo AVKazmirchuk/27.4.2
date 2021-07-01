@@ -1,5 +1,4 @@
 #include <iostream>
-#include <ctime>
 
 #include "../include/header.h"
 
@@ -24,6 +23,8 @@ bool cinNoFail()
 
     return true;
 }
+
+
 
 std::tuple<int, std::string, std::pair<double, double>, Color, std::pair<double, double>> input()
 {
@@ -93,7 +94,7 @@ std::tuple<int, std::string, std::pair<double, double>, Color, std::pair<double,
     }
 
     std::cout << "Parameter, (for a circle - radius, for a square and a triangle - edge, " <<
-              "for a rectangle - length and width: ";
+              "for a rectangle - length and width): ";
 
     std::pair<double, double> parameters;
 
@@ -108,54 +109,39 @@ std::tuple<int, std::string, std::pair<double, double>, Color, std::pair<double,
     return { figureType, figureName, center, color, parameters };
 }
 
-void output(const std::string& figureName, std::pair<double, double> center, const std::string& color,
-            double area, std::tuple<double, double, double, double> parallelepiped)
-{
-    std::cout << '\n' << figureName << ", center (" << center.first << ", " << center.second <<
-              "), color(" << color << "), area (" << area << "), parallelepiped (" <<
-              std::get<0>(parallelepiped) << ", " << std::get<1>(parallelepiped) <<
-              ", " << std::get<2>(parallelepiped) << ", " << std::get<3>(parallelepiped) << ")\n";
-}
+
 
 int main()
 {
     std::tuple<int, std::string, std::pair<double, double>, Color, std::pair<double, double>> parameters = input();
 
+    Figure* figure;
+
     switch (std::get<0>(parameters))
     {
         case 1:
-            Circle * circle;
-            circle = new Circle(std::get<1>(parameters), std::get<2>(parameters), std::get<3>(parameters), std::get<4>(parameters));
+            figure = new Circle(std::get<1>(parameters), std::get<2>(parameters),
+                    std::get<3>(parameters), std::get<4>(parameters));
 
-            std::cout << circle->getName();
-
-            output(circle->getName(), circle->getCenter(), circle->getColor(), circle->getArea(), circle->getParallelepiped());
-
-            delete circle;
             break;
         case 2:
-            Square * square;
-            square = new Square(std::get<1>(parameters), std::get<2>(parameters), std::get<3>(parameters), std::get<4>(parameters));
+            figure = new Square(std::get<1>(parameters), std::get<2>(parameters),
+                    std::get<3>(parameters), std::get<4>(parameters));
 
-            output(square->getName(), square->getCenter(), square->getColor(), square->getArea(), square->getParallelepiped());
-
-            delete square;
             break;
         case 3:
-            Triangle * triangle;
-            triangle = new Triangle(std::get<1>(parameters), std::get<2>(parameters), std::get<3>(parameters), std::get<4>(parameters));
+            figure = new Triangle(std::get<1>(parameters), std::get<2>(parameters),
+                    std::get<3>(parameters), std::get<4>(parameters));
 
-            output(triangle->getName(), triangle->getCenter(), triangle->getColor(), triangle->getArea(), triangle->getParallelepiped());
-
-            delete triangle;
             break;
         case 4:
-            Rectangle * rectangle;
-            rectangle = new Rectangle(std::get<1>(parameters), std::get<2>(parameters), std::get<3>(parameters), std::get<4>(parameters));
+            figure = new Rectangle(std::get<1>(parameters), std::get<2>(parameters),
+                    std::get<3>(parameters), std::get<4>(parameters));
 
-            output(rectangle->getName(), rectangle->getCenter(), rectangle->getColor(), rectangle->getArea(), rectangle->getParallelepiped());
-
-            delete rectangle;
             break;
     }
+
+    std::cout << figure;
+
+    delete figure;
 }

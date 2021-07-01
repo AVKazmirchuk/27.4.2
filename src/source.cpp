@@ -2,14 +2,18 @@
 
 #include "../include/header.h"
 
+//-------Class Figure--------
+
 Figure::Figure(std::string& inName, std::pair<double, double>& inCenter, Color inColor, std::pair<double, double>& inParameters) :
         name{ inName }, center{ inCenter }, color{ inColor }, parameters{ inParameters } {}
 
-std::string& Figure::getName() { return name; }
+Figure::~Figure() = default;
 
-std::pair<double, double> Figure::getCenter() { return center; }
+std::string Figure::getName() const { return name; }
 
-std::string Figure::getColor()
+std::pair<double, double> Figure::getCenter() const { return center; }
+
+std::string Figure::getColor() const
 {
     switch (static_cast<int>(color))
     {
@@ -25,7 +29,7 @@ std::string Figure::getColor()
     }
 }
 
-std::pair<double, double> Figure::getParameters() { return parameters; }
+std::pair<double, double> Figure::getParameters() const { return parameters; }
 
 double Figure::getPI() const { return PI; }
 
@@ -37,51 +41,71 @@ std::tuple<double, double, double, double> Figure::getParallelepiped(std::pair<d
              center.first + offset.first, center.second + offset.second };
 }
 
+std::ostream& operator<<(std::ostream& out, const Figure* figure)
+{
+    std::tuple<double, double, double, double> parallelepiped = figure->preparingParallelepiped();
 
+    out << '\n' << figure->getName() << ", center (" << figure->getCenter().first << ", " << figure->getCenter().second <<
+              "), color(" << figure->getColor() << "), area (" << figure->getArea() << "), parallelepiped (" <<
+              std::get<0>(parallelepiped) << ", " << std::get<1>(parallelepiped) <<
+              ", " << std::get<2>(parallelepiped) << ", " << std::get<3>(parallelepiped) << ")\n";
+
+    return out;
+}
+
+//-------Class Circle--------
 
 Circle::Circle(std::string inName, std::pair<double, double> inCenter, Color inColor, std::pair<double, double> inParameters) :
         Figure(inName, inCenter, inColor, inParameters) {}
 
-double Circle::getArea() { return getPI() * pow(getParameters().first, 2); }
+Circle::~Circle() = default;
 
-std::tuple<double, double, double, double> Circle::getParallelepiped()
+double Circle::getArea() const { return getPI() * pow(getParameters().first, 2); }
+
+std::tuple<double, double, double, double> Circle::preparingParallelepiped() const
 {
-    return Figure::getParallelepiped({ getParameters().first, getParameters().first });
+    return getParallelepiped({ getParameters().first, getParameters().first });
 }
 
-
+//-------Class Square--------
 
 Square::Square(std::string inName, std::pair<double, double> inCenter, Color inColor, std::pair<double, double> inParameters) :
         Figure(inName, inCenter, inColor, inParameters) {}
 
-double Square::getArea() { return pow(getParameters().first, 2); }
+Square::~Square() = default;
 
-std::tuple<double, double, double, double> Square::getParallelepiped()
+double Square::getArea() const { return pow(getParameters().first, 2); }
+
+std::tuple<double, double, double, double> Square::preparingParallelepiped() const
 {
-    return Figure::getParallelepiped({ getParameters().first / 2, getParameters().first / 2 });
+    return getParallelepiped({ getParameters().first / 2, getParameters().first / 2 });
 }
 
-
+//-------Class Triangle------
 
 Triangle::Triangle(std::string inName, std::pair<double, double> inCenter, Color inColor, std::pair<double, double> inParameters) :
         Figure(inName, inCenter, inColor, inParameters) {}
 
-double Triangle::getArea() { return pow(getParameters().first, 2) / 2 * sin(60 * getPI() / 180); }
+Triangle::~Triangle() = default;
 
-std::tuple<double, double, double, double> Triangle::getParallelepiped()
+double Triangle::getArea() const { return pow(getParameters().first, 2) / 2 * sin(60 * getPI() / 180); }
+
+std::tuple<double, double, double, double> Triangle::preparingParallelepiped() const
 {
-    return Figure::getParallelepiped({
-                                             getParameters().first / 2, sqrt(pow(getParameters().first, 2) - pow(getParameters().first, 2) / 4) / 2 });
+    return getParallelepiped({ getParameters().first / 2,
+                                       sqrt(pow(getParameters().first, 2) - pow(getParameters().first, 2) / 4) / 2 });
 }
 
-
+//-------Class Rectangle-----
 
 Rectangle::Rectangle(std::string inName, std::pair<double, double> inCenter, Color inColor, std::pair<double, double> inParameters) :
         Figure(inName, inCenter, inColor, inParameters) {}
 
-double Rectangle::getArea() { return getParameters().first * getParameters().second; }
+Rectangle::~Rectangle() = default;
 
-std::tuple<double, double, double, double> Rectangle::getParallelepiped()
+double Rectangle::getArea() const { return getParameters().first * getParameters().second; }
+
+std::tuple<double, double, double, double> Rectangle::preparingParallelepiped() const
 {
-    return Figure::getParallelepiped({ getParameters().first / 2, getParameters().second / 2 });
+    return getParallelepiped({ getParameters().first / 2, getParameters().second / 2 });
 }
